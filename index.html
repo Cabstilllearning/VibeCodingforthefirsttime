@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floating Hearts 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffdde1 50%, #ff9a9e 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            cursor: pointer;
+            position: relative;
+        }
+
+        /* Hint text */
+        .hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff6b6b;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+            pointer-events: none;
+            opacity: 0.8;
+            animation: pulse 2s ease-in-out infinite;
+            text-align: center;
+            z-index: 10;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        /* Heart shape using CSS */
+        .heart {
+            position: absolute;
+            width: var(--size);
+            height: var(--size);
+            background: linear-gradient(135deg, var(--color1), var(--color2));
+            transform: rotate(-45deg);
+            animation: float var(--duration) ease-in forwards;
+            will-change: transform, opacity;
+            pointer-events: none;
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            border-radius: 50%;
+        }
+
+        .heart::before {
+            top: -50%;
+            left: 0;
+        }
+
+        .heart::after {
+            top: 0;
+            left: 50%;
+        }
+
+        /* Float animation with sway */
+        @keyframes float {
+            0% {
+                transform: rotate(-45deg) translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: rotate(-45deg) translateY(-120vh) translateX(var(--sway));
+                opacity: 0;
+            }
+        }
+
+        /* Click explosion animation (faster) */
+        .heart.explosion {
+            animation: explode var(--duration) ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: rotate(-45deg) translateY(0) translateX(0) scale(0);
+                opacity: 0;
+            }
+            20% {
+                transform: rotate(-45deg) translateY(-20px) translateX(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(-45deg) translateY(-50vh) translateX(var(--sway)) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        /* Gift Box Styles */
+        .gift-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffdde1 50%, #ff9a9e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .gift-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            animation: floatGift 3s ease-in-out infinite;
+        }
+
+        @keyframes floatGift {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .gift-box {
+            position: relative;
+            width: 120px;
+            height: 100px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .gift-box-top {
+            position: absolute;
+            top: 0;
+            left: -10px;
+            width: 140px;
+            height: 25px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 2;
+        }
+
+        .gift-box-bottom {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 120px;
+            height: 80px;
+            background: linear-gradient(135deg, #ff8585, #ff6b6b);
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            z-index: 1;
+        }
+
+        .gift-ribbon-vertical {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            z-index: 3;
+        }
+
+        .gift-ribbon-horizontal {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            z-index: 3;
+        }
+
+        .gift-bow {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 30px;
+            background: #ffd700;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            z-index: 4;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .gift-bow::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: -10px;
+            width: 30px;
+            height: 20px;
+            background: #ffd700;
+            border-radius: 50%;
+            transform: rotate(-30deg);
+        }
+
+        .gift-bow::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            right: -10px;
+            width: 30px;
+            height: 20px;
+            background: #ffd700;
+            border-radius: 50%;
+            transform: rotate(30deg);
+        }
+
+        .gift-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: pulse 2s ease-in-out infinite;
+            z-index: 10;
+            pointer-events: none;
+            text-align: center;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+
+        .click-counter {
+            font-size: 1.2rem;
+            color: #ff8585;
+            font-weight: 600;
+            transition: transform 0.2s;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.9);
+        }
+
+        /* Shake animation for gift box */
+        @keyframes shake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        .gift-box.shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hint {
+                font-size: 1.2rem;
+                width: 80%;
+            }
+            
+            .gift-box {
+                width: 100px;
+                height: 85px;
+            }
+            
+            .gift-box-top {
+                width: 120px;
+                height: 22px;
+                left: -10px;
+            }
+            
+            .gift-box-bottom {
+                width: 100px;
+                height: 70px;
+            }
+            
+            .gift-text {
+                font-size: 0.85rem;
+                letter-spacing: 0.3px;
+            }
+            
+            .click-counter {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Gift Box Overlay -->
+    <div class="gift-overlay" id="giftOverlay">
+        <div class="gift-container">
+            <div class="gift-box" id="giftBox">
+                <div class="gift-box-top"></div>
+                <div class="gift-box-bottom"></div>
+                <div class="gift-ribbon-vertical"></div>
+                <div class="gift-ribbon-horizontal"></div>
+                <div class="gift-bow"></div>
+                <div class="gift-text">🎁 8/3 Present 🎁</div>
+            </div>
+            <div class="click-counter" id="clickCounter">Click 5 lần để mở quà!</div>
+        </div>
+    </div>
+
+    <div class="hint" style="opacity: 0; transition: opacity 0.5s;">8/3 con chúc mẹ và 2 chị mạnh khỏe, ngày càng xinh đẹp và hạnh phúc (Vcode kh kịp mong mn thông cảm)</div>
+
+    <script>
+        // Configuration
+        const config = {
+            autoSpawnInterval: 300, // milliseconds between auto spawns
+            colors: [
+                ['#ff6b6b', '#ff8e8e'], // Red to light red
+                ['#ff9a9e', '#fecfef'], // Pink to light pink
+                ['#ff758c', '#ff7eb3'], // Coral to pink
+                ['#fa709a', '#fee140'], // Pink to yellow (sunset)
+                ['#ff5858', '#f09819'], // Red to orange
+                ['#f093fb', '#f5576c']  // Purple to red
+            ],
+            minSize: 15,
+            maxSize: 40,
+            minDuration: 4,
+            maxDuration: 8,
+            explosionCount: 8, // hearts per click
+            maxHearts: 100 // limit for performance
+        };
+
+        let heartCount = 0;
+        const activeHearts = new Set();
+        let autoSpawnInterval = null;
+        let giftClickCount = 0;
+        const requiredClicks = 5;
+        let isGiftOpened = false;
+
+        // Create heart element
+        function createHeart(x, y, isExplosion = false) {
+            // Remove old hearts if too many
+            if (heartCount >= config.maxHearts) {
+                const oldest = document.querySelector('.heart');
+                if (oldest) oldest.remove();
+                heartCount--;
+            }
+
+            const heart = document.createElement('div');
+            heart.className = 'heart' + (isExplosion ? ' explosion' : '');
+            
+            // Random size
+            const size = Math.random() * (config.maxSize - config.minSize) + config.minSize;
+            
+            // Random colors
+            const colorPair = config.colors[Math.floor(Math.random() * config.colors.length)];
+            
+            // Random duration (speed)
+            const duration = Math.random() * (config.maxDuration - config.minDuration) + config.minDuration;
+            
+            // Random horizontal sway (-100px to +100px)
+            const sway = (Math.random() - 0.5) * 200;
+            
+            // Apply styles
+            heart.style.cssText = `
+                --size: ${size}px;
+                --color1: ${colorPair[0]};
+                --color2: ${colorPair[1]};
+                --duration: ${duration}s;
+                --sway: ${sway}px;
+                left: ${x}px;
+                top: ${y}px;
+                z-index: ${Math.floor(Math.random() * 100)};
+            `;
+
+            document.body.appendChild(heart);
+            heartCount++;
+            activeHearts.add(heart);
+
+            // Remove after animation
+            const removeTimeout = setTimeout(() => {
+                if (heart.parentNode) {
+                    heart.remove();
+                    heartCount--;
+                    activeHearts.delete(heart);
+                }
+            }, duration * 1000);
+
+            // Store timeout for cleanup
+            heart.dataset.timeout = removeTimeout;
+        }
+
+        // Auto spawn from bottom
+        function autoSpawn() {
+            const x = Math.random() * window.innerWidth;
+            const y = window.innerHeight + 50; // Start below screen
+            createHeart(x, y, false);
+        }
+
+        // Click/Touch explosion
+        function handleInteraction(e) {
+            // Prevent default for touch
+            e.preventDefault();
+            
+            const x = e.clientX || (e.touches && e.touches[0].clientX);
+            const y = e.clientY || (e.touches && e.touches[0].clientY);
+            
+            if (x === undefined || y === undefined) return;
+
+            // Create explosion of hearts
+            for (let i = 0; i < config.explosionCount; i++) {
+                setTimeout(() => {
+                    // Random offset from click point
+                    const offsetX = (Math.random() - 0.5) * 60;
+                    const offsetY = (Math.random() - 0.5) * 60;
+                    createHeart(x + offsetX, y + offsetY, true);
+                }, i * 50); // Stagger creation
+            }
+
+            // Hide hint on first interaction
+            const hint = document.querySelector('.hint');
+            if (hint && hint.style.opacity !== '1') {
+                hint.style.opacity = '0';
+            }
+        }
+
+        // Open gift and start hearts
+        function openGift() {
+            isGiftOpened = true;
+            const overlay = document.getElementById('giftOverlay');
+            const hint = document.querySelector('.hint');
+            
+            // Fade out gift overlay
+            overlay.style.transition = 'opacity 0.8s ease-out';
+            overlay.style.opacity = '0';
+            
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                // Show hint
+                hint.style.opacity = '0.8';
+            }, 800);
+
+            // Create explosion of hearts from center
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const angle = (i / 20) * Math.PI * 2;
+                    const distance = 100;
+                    const x = centerX + Math.cos(angle) * distance;
+                    const y = centerY + Math.sin(angle) * distance;
+                    createHeart(x, y, true);
+                }, i * 30);
+            }
+
+            // Start auto spawn
+            autoSpawnInterval = setInterval(autoSpawn, config.autoSpawnInterval);
+
+            // Initial batch of hearts
+            for (let i = 0; i < 10; i++) {
+                setTimeout(autoSpawn, i * 200);
+            }
+
+            // Event listeners for hearts
+            document.addEventListener('click', handleInteraction);
+            document.addEventListener('touchstart', handleInteraction, { passive: false });
+        }
+
+        // Handle gift box click
+        function handleGiftClick(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (isGiftOpened) return;
+            
+            giftClickCount++;
+            const giftBox = document.getElementById('giftBox');
+            const counter = document.getElementById('clickCounter');
+            
+            // Add shake animation
+            giftBox.classList.remove('shake');
+            void giftBox.offsetWidth; // Trigger reflow
+            giftBox.classList.add('shake');
+            
+            // Update counter text
+            const remaining = requiredClicks - giftClickCount;
+            if (remaining > 0) {
+                counter.textContent = `Còn ${remaining} lần nữa!`;
+                counter.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    counter.style.transform = 'scale(1)';
+                }, 200);
+            } else {
+                counter.textContent = 'Mở quà!!! 🎉';
+                openGift();
+            }
+        }
+
+        // Initialize
+        function init() {
+            // Gift box event listeners
+            const giftBox = document.getElementById('giftBox');
+            giftBox.addEventListener('click', handleGiftClick);
+            giftBox.addEventListener('touchstart', handleGiftClick, { passive: false });
+            
+            // Handle resize
+            window.addEventListener('resize', () => {
+                // Cleanup hearts that might be out of bounds
+                document.querySelectorAll('.heart').forEach(heart => {
+                    const rect = heart.getBoundingClientRect();
+                    if (rect.top < -100) {
+                        clearTimeout(heart.dataset.timeout);
+                        heart.remove();
+                        heartCount--;
+                    }
+                });
+            });
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            document.querySelectorAll('.heart').forEach(heart => {
+                clearTimeout(heart.dataset.timeout);
+            });
+            if (autoSpawnInterval) clearInterval(autoSpawnInterval);
+        });
+
+        // Start
+        init();
+    </script>
+<script src="https://deepsite.hf.co/deepsite-badge.js"></script>
+</body>
+</html>
