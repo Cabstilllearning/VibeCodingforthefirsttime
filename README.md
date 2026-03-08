@@ -1,13 +1,13 @@
 ---
-title: DeepSite Project
+title: Cab Pj
 colorFrom: gray
 colorTo: green
 sdk: static
 emoji: 🧠
 tags:
-  - deepsite-v4
+  - CabHV
 ---
 
-# DeepSite Project
+# Cab Project
 
-This project has been created with [DeepSite](https://deepsite.hf.co) AI Vibe Coding.
+vibe coding 1st time
